@@ -15,6 +15,8 @@ type Conn interface {
 type mpdConn struct {
 	conn net.Conn
 	connVer string
+	events chan Event
+	actions chan Action
 }
 
 func (c mpdConn) Connected() bool {
@@ -49,5 +51,10 @@ func Open(addr string) (Conn, error) {
 	}
 
 	// Give them the mpdConn
-	return mpdConn{conn, connVer}, nil
+	return mpdConn{
+		conn,
+		connVer,
+		make(chan Event),
+		make(chan Action),
+	}, nil
 }
